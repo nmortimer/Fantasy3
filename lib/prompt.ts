@@ -6,13 +6,24 @@ export type LogoPromptInputs = {
 };
 
 export function buildLogoPrompt({ teamName, mascot, primaryColor, secondaryColor }: LogoPromptInputs) {
-  const base = `Minimal, modern sports logo of the ${mascot} for the ${teamName}. Flat vector mark, bold lines, balanced composition, limited palette, centered emblem, clean white background, high contrast, no small text, no watermark.`;
-  const palette = ` Use only these colors: primary ${primaryColor}, secondary ${secondaryColor}.`;
-  const negative = ` --no photorealistic, 3D render, busy background, watermark, signature, extra text, realistic people`;
-  return (base + palette + negative).trim();
+  return (
+    `Professional minor league sports mascot logo for the ${teamName}: ${mascot}. ` +
+    `Flat vector illustration, bold clean lines, thick outline, simple geometric shapes, ` +
+    `dynamic but balanced composition, centered mascot emblem. ` +
+    `Use a limited palette of primary ${primaryColor} and secondary ${secondaryColor}, plus black/white for contrast. ` +
+    `No text or wordmarks, no gradients, no shadows, no bevels, no 3D, no background scene. ` +
+    `Modern pro sports branding style, crisp edges, high contrast, versatile for jerseys or avatars. ` +
+    `Plain white or transparent background.` +
+    ` --no photorealism --no photograph --no extra objects --no clutter --no watermark`
+  );
 }
 
-export function pollinationsURL(prompt: string, seed: string | number = "random", width = 1024, height = 1024) {
+export function pollinationsURL(
+  prompt: string,
+  seed: string | number = "random",
+  width = 1024,
+  height = 1024
+) {
   const encoded = encodeURIComponent(prompt);
   return `https://image.pollinations.ai/prompt/${encoded}?seed=${seed}&width=${width}&height=${height}&nologo=true`;
 }
