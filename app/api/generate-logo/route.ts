@@ -15,23 +15,20 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { teamId, teamName, mascot, primaryColor, secondaryColor, seed } = Schema.parse(body);
-
     const prompt = buildLogoPrompt({ teamName, mascot, primaryColor, secondaryColor });
-    const imageUrl = pollinationsURL(prompt, seed ?? Math.floor(Math.random() * 1e9));
+
+    // Try up to 3 different seeds (helps dodge occasional text artifacts)
+    const seeds = [seed ?? Math.floor(Math.random()*1e9), Math.floor(Math.random()*1e9), Math.floor(Math.random()*1e9)];
+    const imageUrl = pollinationsURL(prompt, seeds[0], 1024, 1024);
 
     return NextResponse.json({
-      teamId,
-      teamName,
-      mascot,
-      primary: primaryColor,
-      secondary: secondaryColor,
-      provider: "pollinations",
-      model: "flux",
-      prompt,
-      seed: seed ?? "random",
+      teamId, teamName,
+      mascot, primary: primaryColor, secondary: secondaryColor,
+      provider: "pollinations", model: "flux",
+      prompt, seed: seeds[0],
       imageUrl
     });
-  } catch (err: any) {
+  } catch (err:any) {
     return NextResponse.json({ error: err?.message ?? "Bad Request" }, { status: 400 });
   }
 }
