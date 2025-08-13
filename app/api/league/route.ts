@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
 function deriveMascot(teamName: string) {
-  if (!teamName) return "Fox";
+  if (!teamName) return "Mascot";
   const cleaned = teamName
-    .replace(/\b(the|team|club|fc|sc|cf|afc|of|and|&)\b/gi, "")
-    .replace(/[^a-z0-9\s-]/gi, "")
-    .trim()
-    .replace(/\s+/g, " ");
-  const parts = cleaned.split(" ").filter(Boolean);
-  const pick = parts.length ? parts[parts.length - 1] : teamName;
+    .replace(/[^\w\s-]/g, " ")
+    .toLowerCase();
+  const stop = new Set(["the","team","club","fc","sc","cf","afc","of","and","league","nations"]);
+  const tokens = cleaned.split(/\s+/).filter(Boolean);
+  const words = tokens.filter(w => !stop.has(w) && !/^\d+$/.test(w));
+  const pick = words.length ? words[words.length - 1] : (tokens[0] || "Mascot");
   return pick.charAt(0).toUpperCase() + pick.slice(1);
 }
 
-// Predefined mascot-based colors
 const mascotColors: Record<string, { primary: string; secondary: string }> = {
-  fox: { primary: "#ff6b00", secondary: "#333333" },
+  fox: { primary: "#ff6b00", secondary: "#222222" },
   wolf: { primary: "#555555", secondary: "#c0c0c0" },
   eagle: { primary: "#002244", secondary: "#c60c30" },
   bear: { primary: "#4b2e2b", secondary: "#d1b271" },
@@ -22,10 +21,11 @@ const mascotColors: Record<string, { primary: string; secondary: string }> = {
   lion: { primary: "#f4c542", secondary: "#8b4513" },
   tiger: { primary: "#ff6600", secondary: "#000000" },
   dragon: { primary: "#006400", secondary: "#8b0000" },
-  stallion: { primary: "#222222", secondary: "#cccccc" }
+  stallion: { primary: "#222222", secondary: "#cccccc" },
+  grenade: { primary: "#1e90ff", secondary: "#ff8b8b" },
+  victor: { primary: "#1e90ff", secondary: "#ff8bff" }
 };
 
-// Generic palette if mascot is not in the map
 const palettePool = [
   { primary: "#ff6b6b", secondary: "#1a1a1a" },
   { primary: "#1e90ff", secondary: "#f8f8ff" },
@@ -38,8 +38,9 @@ const palettePool = [
 
 function assignColors(mascot: string) {
   const key = mascot.toLowerCase();
-  if (mascotColors[key]) return mascotColors[key];
-  // Fallback: deterministic selection from palette based on mascot string hash
+  for (const k of Object.keys(mascotColors)) {
+    if (key.includes(k)) return mascotColors[k];
+  }
   const hash = [...key].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
   return palettePool[hash % palettePool.length];
 }
