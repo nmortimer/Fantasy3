@@ -1,3 +1,4 @@
+// components/TeamCard.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -15,7 +16,10 @@ type Team = {
   logo: string | null;
 };
 
-type Props = { team: Team; onUpdate: (teamId: string, patch: Partial<Team>) => void };
+type Props = {
+  team: Team;
+  onUpdate: (teamId: string, patch: Partial<Team>) => void;
+};
 
 export default function TeamCard({ team, onUpdate }: Props) {
   const [seed, setSeed] = useState<string>(String(Math.floor(Math.random() * 1e9)));
@@ -23,6 +27,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
   const [showFull, setShowFull] = useState(false);
   const [remixTick, setRemixTick] = useState(0);
 
+  // Deterministic, mascot‑guided suggestion that changes on each click
   const suggestion = useMemo(
     () => colorsFor(team.teamName + "|" + remixTick, team.mascot),
     [team.teamName, team.mascot, remixTick]
@@ -41,8 +46,8 @@ export default function TeamCard({ team, onUpdate }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teamId: team.teamId,
-          teamName: team.teamName,
-          mascot: team.mascot,
+          teamName: team.teamName,     // full name as brand context
+          mascot: team.mascot,         // may equal team name; server derives depict noun
           primaryColor: team.primary,
           secondaryColor: team.secondary,
           seed
@@ -60,7 +65,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
 
   return (
     <article className="card">
-      {/* strict 2‑column layout */}
+      {/* Strict two‑column layout (preview | editor). CSS: .team grid enforces columns */}
       <div className="team">
         {/* Preview (left) */}
         <div
@@ -84,27 +89,27 @@ export default function TeamCard({ team, onUpdate }: Props) {
           </header>
 
           <div className="col">
-            {/* Mascot (prefilled with team name) */}
+            {/* Mascot (prefilled with team name; prompt derives clean noun) */}
             <div>
               <label>Mascot</label>
               <input
                 value={team.mascot}
                 onChange={(e) => onUpdate(team.teamId, { mascot: e.target.value })}
-                title="Prefilled with team name; prompt derives a clean mascot noun"
+                title="Prefilled with team name; prompt derives a clean mascot noun (e.g., Fox, Wolf)"
                 aria-label="Mascot"
               />
             </div>
 
             {/* Colors */}
             <div className="row" style={{ gap: "16px" }}>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 260 }}>
                 <ColorPicker
                   label="Primary"
                   value={team.primary}
                   onChange={(v) => onUpdate(team.teamId, { primary: v })}
                 />
               </div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 260 }}>
                 <ColorPicker
                   label="Secondary"
                   value={team.secondary}
@@ -113,7 +118,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
               </div>
             </div>
 
-            {/* Current vs suggested */}
+            {/* Current vs Suggested swatches + Remix */}
             <div className="row" style={{ gap: "12px" }}>
               <span className="subtle" style={{ fontSize: 12 }}>Current:</span>
               <div className="swatch" style={{ background: team.primary }} />
@@ -122,16 +127,28 @@ export default function TeamCard({ team, onUpdate }: Props) {
               <span className="subtle" style={{ fontSize: 12, marginLeft: 14 }}>Suggested:</span>
               <div className="swatch" style={{ background: suggestion.primary }} />
               <div className="swatch" style={{ background: suggestion.secondary }} />
-              <button className="btn" onClick={applySuggestion} title="Try a mascot‑guided palette">Remix Colors</button>
+              <button className="btn" onClick={applySuggestion} title="Try a mascot‑guided palette">
+                Remix Colors
+              </button>
             </div>
 
-            {/* Seed & actions */}
+            {/* Seed & Actions (wraps on small widths; never overflows) */}
             <div className="row" style={{ gap: "12px" }}>
-              <div style={{ width: 220 }}>
+              <div style={{ width: 240, maxWidth: "100%" }}>
                 <label>Seed</label>
-                <input value={seed} onChange={(e) => setSeed(e.target.value)} aria-label="Seed" />
+                <input
+                  value={seed}
+                  onChange={(e) => setSeed(e.target.value)}
+                  aria-label="Seed"
+                />
               </div>
-              <button className="btn" onClick={() => setSeed(String(Math.floor(Math.random() * 1e9)))}>New Seed</button>
+              <button
+                className="btn"
+                onClick={() => setSeed(String(Math.floor(Math.random() * 1e9)))}
+                title="Randomize seed"
+              >
+                New Seed
+              </button>
               <button className="btn btn-primary" onClick={generate} disabled={generating}>
                 {generating ? "Generating…" : "Generate"}
               </button>
@@ -140,7 +157,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
         </section>
       </div>
 
-      {/* Full-size modal */}
+      {/* Full‑size modal */}
       <Modal open={!!showFull && !!team.logo} onClose={() => setShowFull(false)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
