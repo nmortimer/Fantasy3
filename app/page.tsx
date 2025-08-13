@@ -45,12 +45,11 @@ export default function Page() {
     <main className="container">
       <h1>Fantasy Football AI — Free Logo MVP</h1>
 
-      <div className="card row">
+      <div className="toolbar">
         <input
           placeholder="Enter Sleeper League ID"
           value={leagueId}
           onChange={(e) => setLeagueId(e.target.value)}
-          style={{ width: 420 }}
         />
         <button onClick={loadLeague} disabled={loading || !leagueId}>
           {loading ? "Loading…" : "Load League"}
@@ -69,7 +68,7 @@ export default function Page() {
       )}
 
       <div className="footer">
-        Provider: Pollinations (FLUX). For production, pin images to S3/CDN.
+        Images generated via Pollinations (FLUX). For production, store to S3/CDN. Click logos to view full size.
       </div>
     </main>
   );
