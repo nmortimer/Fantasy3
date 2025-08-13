@@ -42,15 +42,15 @@ export default function Page() {
   };
 
   return (
-    <main className="grid" style={{ gap: 20 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700 }}>Fantasy Football AI — Free Logo MVP</h1>
+    <main className="container">
+      <h1>Fantasy Football AI — Free Logo MVP</h1>
 
-      <div className="card" style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div className="card row">
         <input
           placeholder="Enter Sleeper League ID"
           value={leagueId}
           onChange={(e) => setLeagueId(e.target.value)}
-          style={{ width: 360 }}
+          style={{ width: 420 }}
         />
         <button onClick={loadLeague} disabled={loading || !leagueId}>
           {loading ? "Loading…" : "Load League"}
@@ -58,19 +58,19 @@ export default function Page() {
       </div>
 
       {league && (
-        <section className="grid" style={{ gap: 12 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 600 }}>{league.league.name}</h2>
-          <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))", gap: 16 }}>
+        <>
+          <h2>{league.league.name}</h2>
+          <div className="cards">
             {league.teams.map((t) => (
               <TeamCard key={t.teamId} team={t} onUpdate={updateTeam} />
             ))}
           </div>
-        </section>
+        </>
       )}
 
-      <footer style={{ opacity: 0.6, fontSize: 12 }}>
-        Provider: Pollinations (model: FLUX). Images load from a public URL. For production, pin to S3/CDN.
-      </footer>
+      <div className="footer">
+        Provider: Pollinations (FLUX). For production, pin images to S3/CDN.
+      </div>
     </main>
   );
 }
