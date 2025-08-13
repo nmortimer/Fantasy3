@@ -1,14 +1,17 @@
+import { chooseDepictTerm } from "@/lib/utils";
+
 export type LogoPromptInputs = {
   teamName: string;
-  mascot: string;
+  mascot: string;        // can be full name; we’ll pick a depict term
   primaryColor: string;
   secondaryColor: string;
 };
 
 export function buildLogoPrompt({ teamName, mascot, primaryColor, secondaryColor }: LogoPromptInputs) {
+  const depict = chooseDepictTerm(teamName, mascot); // smart singular mascot term
   return (
     `Professional minor league sports mascot logo for the ${teamName}. ` +
-    `Depict a ${mascot} mascot in flat vector illustration style, with bold clean lines, thick outline, and simple geometric shapes. ` +
+    `Depict a ${depict} mascot in flat vector illustration style, with bold clean lines, thick outline, and simple geometric shapes. ` +
     `Dynamic but balanced composition, centered mascot emblem. ` +
     `Use a limited palette of primary ${primaryColor} and secondary ${secondaryColor}, plus black/white for contrast. ` +
     `No text or wordmarks, no gradients, no shadows, no bevels, no 3D, no background scene. ` +
