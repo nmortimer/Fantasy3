@@ -1,81 +1,66 @@
-/* ---------- Base ---------- */
-* { box-sizing: border-box; }
+/* -------- Base -------- */
+*{box-sizing:border-box}
 :root{
-  --bg:#0b0b0c;
-  --panel:#111214;
-  --panel-2:#16181a;
-  --border:#2a2d33;
-  --text:#eaecef;
-  --muted:#a6adbb;
-  --accent:#3b82f6;
+  --bg:#0b0c0f; --panel:#111318; --panel2:#151922;
+  --border:#242834; --text:#e9edf3; --muted:#a0a7b5; --accent:#5865f2;
+  --success:#22c55e; --danger:#ef4444; --shadow:0 10px 30px rgba(0,0,0,.35);
 }
-html,body{ height:100%; }
+html,body{height:100%}
 body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  background: var(--bg);
-  color: var(--text);
+  margin:0; background:var(--bg); color:var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
 
-/* ---------- Layout ---------- */
-.container{ max-width: 1280px; margin: 0 auto; padding: 24px; display:grid; gap:18px; }
+/* -------- Layout -------- */
+.container{max-width:1280px;margin:0 auto;padding:24px;display:grid;gap:20px}
 .toolbar{
-  display:flex; gap:12px; align-items:center; flex-wrap:wrap;
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
-  border:1px solid var(--border); border-radius:14px; padding:12px;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)
 }
-.toolbar input{ width: 420px; }
-.cards{ display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr)); }
+.toolbar input{min-width:380px;flex:1}
 
-/* ---------- Card ---------- */
+/* -------- Cards grid -------- */
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(560px,1fr))}
+
+/* -------- Card -------- */
 .card{
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow)
 }
 
-/* ---------- Inputs & Buttons ---------- */
-label{ font-size:13px; color: var(--muted); }
-input, button, select{
-  background: #1b1d21;
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 10px;
-  border-radius: 10px;
-  outline: none;
-}
-input:focus{ border-color: var(--accent); }
-button{ font-weight:600; }
-button:hover{ border-color: var(--accent); }
-button[disabled]{ opacity:.6; cursor:not-allowed; }
+/* -------- Typography -------- */
+.h1{font-size:28px;font-weight:800;margin:0}
+.h2{font-size:16px;color:var(--muted);margin:0 0 6px}
 
-/* ---------- Titles ---------- */
-h1{ font-size:28px; margin: 0; }
-h2{ font-size:18px; margin: 8px 0 0; color: var(--muted); }
-
-/* ---------- Logo area ---------- */
-.logoBox{
-  width: 360px; height: 360px; display:grid; place-items:center;
-  overflow:hidden; border-radius:12px; background:#0a0b0c; border:1px solid var(--border);
-  cursor: default;
+/* -------- Inputs / Buttons -------- */
+label{font-size:12px;color:var(--muted)}
+input,button,select{
+  background:#161a20;border:1px solid var(--border);color:var(--text);
+  padding:8px 10px;border-radius:10px;outline:none
 }
-.logoBox.clickable{ cursor: zoom-in; }
-.logoImg{ width:100%; height:100%; object-fit:contain; }
+input:focus{border-color:var(--accent)}
+button{font-weight:700}
+button:hover{border-color:var(--accent)}
+button[disabled]{opacity:.6;cursor:not-allowed}
 
-/* ---------- Modal ---------- */
-.modal{
-  position: fixed; inset: 0; z-index: 1000;
-  display:grid; place-items:center; background: rgba(0,0,0,.6);
+/* -------- Preview -------- */
+.preview{
+  width:360px;height:360px;display:grid;place-items:center;
+  background:#0a0d12;border:1px solid var(--border);border-radius:12px;overflow:hidden
 }
-.modalInner{
-  max-width: 90vw; max-height: 90vh;
-  background: #0a0b0c; border: 1px solid var(--border); border-radius: 12px; padding: 8px;
-}
+.preview.click{cursor:zoom-in}
+.preview img{width:100%;height:100%;object-fit:contain;background:#fff}
 
-/* Utilities */
-.row{ display:flex; gap:12px; align-items:center; }
-.col{ display:grid; gap:8px; }
-.footer{ opacity:.7; font-size:12px; }
-.colorDot{ width:18px; height:18px; border-radius:6px; border:1px solid #333; }
+/* -------- Editor -------- */
+.editor{display:grid;gap:10px;min-width:0}
+.row{display:flex;gap:10px;align-items:center}
+.swatch{width:18px;height:18px;border-radius:6px;border:1px solid #2b2f3a}
+
+/* -------- Collapse -------- */
+.disclosure{background:#131720;border:1px solid var(--border);border-radius:12px;padding:10px}
+.disclosure button{width:100%;text-align:left}
+
+/* -------- Modal -------- */
+.modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.6);z-index:1000}
+.modalInner{max-width:90vw;max-height:90vh;background:#0b0e14;border:1px solid var(--border);border-radius:12px;padding:10px}
