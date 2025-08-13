@@ -49,7 +49,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
   return (
     <div className="card">
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-        {/* Left side: team info + controls */}
+        {/* Left: controls */}
         <div style={{ display: "grid", gap: 8 }}>
           <strong style={{ fontSize: 16 }}>{team.teamName}</strong>
           <span style={{ opacity: 0.8 }}>Owner: {team.owner}</span>
@@ -88,9 +88,8 @@ export default function TeamCard({ team, onUpdate }: Props) {
           </div>
         </div>
 
-        {/* Right side: larger logo display */}
+        {/* Right: larger logo */}
         <div
-          className="logo-frame"
           style={{
             width: 320,
             height: 320,
@@ -105,7 +104,6 @@ export default function TeamCard({ team, onUpdate }: Props) {
           {team.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              className="logo-img"
               src={team.logo}
               alt="Team logo"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
