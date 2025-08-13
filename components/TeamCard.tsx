@@ -48,34 +48,68 @@ export default function TeamCard({ team, onUpdate }: Props) {
 
   return (
     <div className="card">
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <div className="col">
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+        {/* Left side: team info + controls */}
+        <div style={{ display: "grid", gap: 8 }}>
           <strong style={{ fontSize: 16 }}>{team.teamName}</strong>
-          <span style={{ color: "#a6adbb" }}>Owner: {team.owner}</span>
+          <span style={{ opacity: 0.8 }}>Owner: {team.owner}</span>
 
-          <div className="col">
-            <div className="row">
-              <label style={{ minWidth: 70 }}>Mascot</label>
-              <input value={team.mascot} onChange={(e) => onUpdate(team.teamId, { mascot: e.target.value })} />
+          <div style={{ display: "grid", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <label style={{ opacity: 0.75, minWidth: 70 }}>Mascot</label>
+              <input
+                value={team.mascot}
+                onChange={(e) => onUpdate(team.teamId, { mascot: e.target.value })}
+              />
             </div>
-            <ColorPicker label="Primary" value={team.primary} onChange={(v) => onUpdate(team.teamId, { primary: v })} />
-            <ColorPicker label="Secondary" value={team.secondary} onChange={(v) => onUpdate(team.teamId, { secondary: v })} />
-            <div className="row">
-              <label style={{ minWidth: 70 }}>Seed</label>
+            <ColorPicker
+              label="Primary"
+              value={team.primary}
+              onChange={(v) => onUpdate(team.teamId, { primary: v })}
+            />
+            <ColorPicker
+              label="Secondary"
+              value={team.secondary}
+              onChange={(v) => onUpdate(team.teamId, { secondary: v })}
+            />
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <label style={{ opacity: 0.75, minWidth: 70 }}>Seed</label>
               <input value={seed} onChange={(e) => setSeed(e.target.value)} />
             </div>
           </div>
 
-          <div className="actions">
-            <button onClick={generate} disabled={loading}>{loading ? "Generating…" : "Generate"}</button>
-            <button onClick={() => setSeed(Math.floor(Math.random() * 1e9).toString())}>New Seed</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={generate} disabled={loading}>
+              {loading ? "Generating…" : "Generate"}
+            </button>
+            <button onClick={() => setSeed(Math.floor(Math.random() * 1e9).toString())}>
+              New Seed
+            </button>
           </div>
         </div>
 
-        <div className="logo-frame">
+        {/* Right side: larger logo display */}
+        <div
+          className="logo-frame"
+          style={{
+            width: 320,
+            height: 320,
+            display: "grid",
+            placeItems: "center",
+            overflow: "hidden",
+            borderRadius: 12,
+            background: "#0a0b0c",
+            border: "1px solid var(--border)"
+          }}
+        >
           {team.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="logo-img" src={team.logo} alt="Team logo" />
+            <img
+              className="logo-img"
+              src={team.logo}
+              alt="Team logo"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           ) : (
             <span style={{ opacity: 0.6 }}>No logo yet</span>
           )}
