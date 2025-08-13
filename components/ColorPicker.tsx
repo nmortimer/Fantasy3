@@ -1,31 +1,37 @@
 "use client";
+
 import { useId } from "react";
 
 type Props = {
   label: string;
-  value: string;                 // hex
+  value: string;                 // hex like #1e90ff
   onChange: (val: string) => void;
 };
 
 export default function ColorPicker({ label, value, onChange }: Props) {
   const id = useId();
-  const onHex = (raw: string) => {
-    const v = raw.trim();
-    // normalize like "#abc" -> "#aabbcc" if desired; for now pass through
-    onChange(v.startsWith("#") ? v : `#${v}`);
-  };
+
+  function normalize(v: string) {
+    const s = v.trim();
+    return s.startsWith("#") ? s : `#${s}`;
+  }
 
   return (
-    <div className="row" style={{ alignItems: "center" }}>
-      <label htmlFor={id} style={{ minWidth: 80 }}>{label}</label>
-      <input id={id} type="color" value={value} onChange={(e) => onHex(e.target.value)} />
+    <div className="form-row">
+      <label htmlFor={id}>{label}</label>
       <input
+        id={id}
+        type="color"
         value={value}
-        onChange={(e) => onHex(e.target.value)}
-        style={{ width: 110 }}
+        onChange={(e) => onChange(normalize(e.target.value))}
+        aria-label={`${label} color`}
+      />
+      <input
+        className="hex"
+        value={value}
+        onChange={(e) => onChange(normalize(e.target.value))}
         aria-label={`${label} hex`}
       />
-      {/* live swatch mirrors current state */}
       <div className="swatch" style={{ background: value }} title={value} />
     </div>
   );
