@@ -23,18 +23,17 @@ export default function TeamCard({ team, onUpdate }: Props) {
   const [showFull, setShowFull] = useState(false);
   const [remixTick, setRemixTick] = useState(0);
 
-  // A deterministic suggestion that changes each click but stays brand‑coherent
   const suggestion = useMemo(
     () => colorsFor(team.teamName + "|" + remixTick, team.mascot),
     [team.teamName, team.mascot, remixTick]
   );
 
-  function applySuggestion() {
+  const applySuggestion = () => {
     onUpdate(team.teamId, { primary: suggestion.primary, secondary: suggestion.secondary });
     setRemixTick((x) => x + 1);
-  }
+  };
 
-  async function generate() {
+  const generate = async () => {
     try {
       setGenerating(true);
       const res = await fetch("/api/generate-logo", {
@@ -42,12 +41,12 @@ export default function TeamCard({ team, onUpdate }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teamId: team.teamId,
-          teamName: team.teamName,     // full name as brand context
-          mascot: team.mascot,         // may equal team name; server derives depict noun
+          teamName: team.teamName,
+          mascot: team.mascot,
           primaryColor: team.primary,
           secondaryColor: team.secondary,
-          seed,
-        }),
+          seed
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Generation failed");
@@ -57,12 +56,13 @@ export default function TeamCard({ team, onUpdate }: Props) {
     } finally {
       setGenerating(false);
     }
-  }
+  };
 
   return (
     <article className="card">
-      <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
-        {/* Preview */}
+      {/* strict 2‑column layout */}
+      <div className="team">
+        {/* Preview (left) */}
         <div
           className={`preview ${team.logo ? "click" : ""}`}
           onClick={() => team.logo && setShowFull(true)}
@@ -76,8 +76,8 @@ export default function TeamCard({ team, onUpdate }: Props) {
           )}
         </div>
 
-        {/* Controls */}
-        <section className="editor" style={{ flex: 1 }}>
+        {/* Editor (right) */}
+        <section className="editor">
           <header className="stack-sm">
             <div className="title">{team.teamName}</div>
             <div className="owner">Owner: {team.owner}</div>
@@ -85,20 +85,18 @@ export default function TeamCard({ team, onUpdate }: Props) {
 
           <div className="col">
             {/* Mascot (prefilled with team name) */}
-            <div className="row group" style={{ gap: 12 }}>
-              <div style={{ flex: 1 }}>
-                <label>Mascot</label>
-                <input
-                  value={team.mascot}
-                  onChange={(e) => onUpdate(team.teamId, { mascot: e.target.value })}
-                  title="Prefilled with team name; prompt derives a clean mascot noun (e.g., Fox, Wolf)"
-                  aria-label="Mascot"
-                />
-              </div>
+            <div>
+              <label>Mascot</label>
+              <input
+                value={team.mascot}
+                onChange={(e) => onUpdate(team.teamId, { mascot: e.target.value })}
+                title="Prefilled with team name; prompt derives a clean mascot noun"
+                aria-label="Mascot"
+              />
             </div>
 
             {/* Colors */}
-            <div className="row" style={{ gap: 16 }}>
+            <div className="row" style={{ gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <ColorPicker
                   label="Primary"
@@ -115,37 +113,25 @@ export default function TeamCard({ team, onUpdate }: Props) {
               </div>
             </div>
 
-            {/* Live chips & suggestion */}
-            <div className="row" style={{ gap: 12 }}>
-              <span className="subtle" style={{ fontSize: 12 }}>
-                Current:
-              </span>
+            {/* Current vs suggested */}
+            <div className="row" style={{ gap: "12px" }}>
+              <span className="subtle" style={{ fontSize: 12 }}>Current:</span>
               <div className="swatch" style={{ background: team.primary }} />
               <div className="swatch" style={{ background: team.secondary }} />
 
-              <span className="subtle" style={{ fontSize: 12, marginLeft: 14 }}>
-                Suggested:
-              </span>
+              <span className="subtle" style={{ fontSize: 12, marginLeft: 14 }}>Suggested:</span>
               <div className="swatch" style={{ background: suggestion.primary }} />
               <div className="swatch" style={{ background: suggestion.secondary }} />
-              <button className="btn" onClick={applySuggestion} title="Try a mascot‑guided palette">
-                Remix Colors
-              </button>
+              <button className="btn" onClick={applySuggestion} title="Try a mascot‑guided palette">Remix Colors</button>
             </div>
 
             {/* Seed & actions */}
-            <div className="row" style={{ gap: 12 }}>
+            <div className="row" style={{ gap: "12px" }}>
               <div style={{ width: 220 }}>
                 <label>Seed</label>
                 <input value={seed} onChange={(e) => setSeed(e.target.value)} aria-label="Seed" />
               </div>
-              <button
-                className="btn"
-                onClick={() => setSeed(String(Math.floor(Math.random() * 1e9)))}
-                title="Randomize seed"
-              >
-                New Seed
-              </button>
+              <button className="btn" onClick={() => setSeed(String(Math.floor(Math.random() * 1e9)))}>New Seed</button>
               <button className="btn btn-primary" onClick={generate} disabled={generating}>
                 {generating ? "Generating…" : "Generate"}
               </button>
@@ -154,7 +140,7 @@ export default function TeamCard({ team, onUpdate }: Props) {
         </section>
       </div>
 
-      {/* Full‑size modal */}
+      {/* Full-size modal */}
       <Modal open={!!showFull && !!team.logo} onClose={() => setShowFull(false)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
