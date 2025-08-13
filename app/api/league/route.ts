@@ -1,49 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function deriveMascot(teamName: string) {
-  if (!teamName) return "Mascot";
-  const cleaned = teamName
-    .replace(/[^\w\s-]/g, " ")
-    .toLowerCase();
-  const stop = new Set(["the","team","club","fc","sc","cf","afc","of","and","league","nations"]);
-  const tokens = cleaned.split(/\s+/).filter(Boolean);
-  const words = tokens.filter(w => !stop.has(w) && !/^\d+$/.test(w));
-  const pick = words.length ? words[words.length - 1] : (tokens[0] || "Mascot");
-  return pick.charAt(0).toUpperCase() + pick.slice(1);
-}
-
-const mascotColors: Record<string, { primary: string; secondary: string }> = {
-  fox: { primary: "#ff6b00", secondary: "#222222" },
-  wolf: { primary: "#555555", secondary: "#c0c0c0" },
-  eagle: { primary: "#002244", secondary: "#c60c30" },
-  bear: { primary: "#4b2e2b", secondary: "#d1b271" },
-  shark: { primary: "#0a3d62", secondary: "#60a3bc" },
-  lion: { primary: "#f4c542", secondary: "#8b4513" },
-  tiger: { primary: "#ff6600", secondary: "#000000" },
-  dragon: { primary: "#006400", secondary: "#8b0000" },
-  stallion: { primary: "#222222", secondary: "#cccccc" },
-  grenade: { primary: "#1e90ff", secondary: "#ff8b8b" },
-  victor: { primary: "#1e90ff", secondary: "#ff8bff" }
-};
-
-const palettePool = [
-  { primary: "#ff6b6b", secondary: "#1a1a1a" },
-  { primary: "#1e90ff", secondary: "#f8f8ff" },
-  { primary: "#2ecc71", secondary: "#145a32" },
-  { primary: "#e67e22", secondary: "#1a1a1a" },
-  { primary: "#9b59b6", secondary: "#2c3e50" },
-  { primary: "#f1c40f", secondary: "#1a1a1a" },
-  { primary: "#e74c3c", secondary: "#1a1a1a" }
-];
-
-function assignColors(mascot: string) {
-  const key = mascot.toLowerCase();
-  for (const k of Object.keys(mascotColors)) {
-    if (key.includes(k)) return mascotColors[k];
-  }
-  const hash = [...key].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-  return palettePool[hash % palettePool.length];
-}
+import { assignColorsForTeam, cleanTeamName } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -60,9 +16,12 @@ export async function GET(req: NextRequest) {
 
   const teams = rosters.map((r: any) => {
     const u = users.find((x: any) => x.user_id === r.owner_id);
-    const teamName = u?.metadata?.team_name || `${league.name} Team ${r.roster_id}`;
-    const mascot = deriveMascot(teamName);
-    const colors = assignColors(mascot);
+    const rawName = u?.metadata?.team_name || `${league.name} Team ${r.roster_id}`;
+    const teamName = cleanTeamName(rawName);
+    // Prefill mascot with the full team name (editable). Prompt logic will pick a depict term.
+    const mascot = teamName;
+    const colors = assignColorsForTeam(teamName, mascot);
+
     return {
       teamId: String(r.roster_id),
       owner: u?.display_name ?? "Unknown",
