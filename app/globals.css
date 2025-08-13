@@ -1,6 +1,70 @@
+/* ---- Base ---- */
 * { box-sizing: border-box; }
-body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
-button { cursor: pointer; }
-input, button, select { background: #111; border: 1px solid #333; color: #eee; padding: 8px 10px; border-radius: 10px; }
-.card { background: #0f0f10; border: 1px solid #1f1f22; border-radius: 16px; padding: 16px; }
-.grid { display: grid; gap: 16px; }
+:root{
+  --bg:#0b0b0c;
+  --panel:#111214;
+  --panel-2:#16181a;
+  --border:#2a2d33;
+  --text:#eaecef;
+  --muted:#a6adbb;
+  --accent:#3b82f6;
+}
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---- Layout helpers ---- */
+.container{ max-width: 1200px; margin: 0 auto; padding: 24px; }
+.grid{ display:grid; gap:16px; }
+.cards{
+  display:grid;
+  gap:16px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+}
+
+/* ---- Card ---- */
+.card{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+/* ---- Inputs & buttons ---- */
+label{ font-size:13px; color: var(--muted); }
+input, button, select{
+  background: #1b1d21;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 10px;
+  outline: none;
+}
+input:focus{ border-color: var(--accent); }
+button{
+  font-weight:600;
+}
+button:hover{ border-color: var(--accent); }
+button[disabled]{ opacity:.6; cursor:not-allowed; }
+
+/* ---- Header/Footer ---- */
+h1{ font-size:28px; margin: 0 0 12px; }
+h2{ font-size:18px; margin: 0 0 8px; color: var(--muted); }
+.footer{ opacity:.7; font-size:12px; margin-top:16px; }
+
+/* ---- Media ---- */
+.logo-frame{
+  width: 220px; height: 220px;
+  display:grid; place-items:center;
+  overflow:hidden; border-radius:12px;
+  background:#0a0b0c; border:1px solid var(--border);
+}
+.logo-img{ width:100%; height:100%; object-fit:contain; }
+.row{ display:flex; gap:8px; align-items:center; }
+.col{ display:grid; gap:8px; }
+.actions{ display:flex; gap:8px; flex-wrap:wrap; }
